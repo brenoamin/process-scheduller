@@ -5,7 +5,7 @@ import "./index.css";
 export const ProcessBox = (): ReactElement => {
   return (
     <div className="form-wrapper">
-      <form action="https://google.com" method="POST">
+      <form onSubmit={(e) => e.preventDefault()}>
         <div className="form-step-1 active">
           <div className="form-close-container">
             <img src={close} alt="Close button" />

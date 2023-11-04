@@ -1,0 +1,46 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.new-button-wrapper {
+  max-width: 250px;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  border: 1px dashed #07074d;
+  border-radius: 30px;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.new-button-title {
+  color: #07074d;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 30px;
+  display: block;
+}
+
+.img-title-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.new-button-wrapper:hover {
+  border-color: #90e0ef;
+
+  .new-button-title {
+    color: #90e0ef;
+  }
+
+}
+.new-button-wrapper:hover svg {
+  fill: #90e0ef;
+}
