@@ -5,6 +5,7 @@ export const AddProcessLogo = (): ReactElement => {
   return (
     <div style={{ display: "flex" }}>
       <svg
+        fill= "#07074d"
         xmlns="http://www.w3.org/2000/svg"
         height="24"
         viewBox="0 -960 960 960"

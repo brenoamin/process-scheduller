@@ -7,7 +7,7 @@
 .new-button-wrapper {
   max-width: 250px;
   display: flex;
-  height: 200px;
+  height: 250px;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -39,7 +39,6 @@
   .new-button-title {
     color: #90e0ef;
   }
-
 }
 .new-button-wrapper:hover svg {
   fill: #90e0ef;
