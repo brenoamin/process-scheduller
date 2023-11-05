@@ -5,7 +5,7 @@ import "./index.css";
 export const ProcessBox = (): ReactElement => {
   return (
     <div className="form-wrapper">
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={(event) => event.preventDefault()}>
         <div className="form-close-container">
           <img src={close} alt="Close button" />
         </div>
@@ -38,6 +38,7 @@ export const ProcessBox = (): ReactElement => {
               placeholder="1"
               id="execution"
               className="form-input"
+              min="1"
             />
           </div>
         </div>
