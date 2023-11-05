@@ -1,0 +1,27 @@
+.matrix-wrapper {
+  margin-left: 25px;
+}
+
+.matrix-title {
+  color: #07074d;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 30px;
+  display: block;
+}
+
+.matrix-row {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fff;
+  height: 70px;
+  max-width: 700px;
+}
+
+.matrix-cell {
+  background-color: #fff;
+  border: 2px solid #07074d;
+  width: 70px;
+  height: 70px;
+}
