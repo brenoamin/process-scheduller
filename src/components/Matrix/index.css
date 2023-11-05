@@ -11,11 +11,11 @@
 }
 
 .matrix-row {
+  display: flex;
   margin-top: 16px;
   display: flex;
   flex-wrap: wrap;
   background-color: #fff;
-  height: 70px;
   max-width: 700px;
 }
 

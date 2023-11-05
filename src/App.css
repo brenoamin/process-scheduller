@@ -12,11 +12,15 @@
   flex-direction: column;
 }
 .process-section {
-  align-items: center;
   display: flex;
+  justify-content: row;
+  align-items: center;
   flex-wrap: wrap;
   gap: 30px;
   margin-top: 20px;
+}
+.memory-section{
+  display: flex;
 }
 
 .background-image {
