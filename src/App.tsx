@@ -6,20 +6,21 @@ import { RAM } from "./components/RAM/RAM";
 import { Reset } from "./components/Reset";
 import { Run } from "./components/Run";
 import { SystemSettings } from "./components/SystemSettings";
-import { FIFOScheduler } from "./schedulers/FIFOScheduler";
-import { Process } from "./types/Process";
 
 function App() {
-  const processes: Process[] = [
-    { id: 1, arrivalTime: 0, executionTime: 4 },
-    { id: 2, arrivalTime: 2, executionTime: 5 },
-    { id: 3, arrivalTime: 4, executionTime: 2 },
-  ];
+  // const processes: Process[] = [
+  //   { id: 1, arrivalTime: 0, executionTime: 2 },
+  //   { id: 2, arrivalTime: 2, executionTime: 3 },
+  //   { id: 3, arrivalTime: 4, executionTime: 4 },
+  //   { id: 4, arrivalTime: 0, executionTime: 2 },
+  //   { id: 5, arrivalTime: 0, executionTime: 1 },
+  //   { id: 6, arrivalTime: 0, executionTime: 2 },
+  // ];
 
-  const scheduler = new FIFOScheduler();
-  const scheduleResult = scheduler.schedule(processes);
+  // const scheduler = new RoundRobinScheduler();
+  // const scheduleResult = scheduler.schedule(processes, 2, 1);
 
-  console.log(scheduleResult);
+  // console.log(scheduleResult);
   return (
     <div className="main-section">
       <header className="background-image">
