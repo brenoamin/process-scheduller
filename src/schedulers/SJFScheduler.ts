@@ -49,6 +49,7 @@ export class SJFScheduler implements Scheduler {
             // Preenche o estado RUNNING para o tempo de execução do processo
             for (let i = 0; i < nextProcess.executionTime; i++) {
                 states[nextProcess.id - 1].push(ProcessState.RUNNING);
+                nextProcess.remainingTime -= 1;
                 currentTime++;
             }
 

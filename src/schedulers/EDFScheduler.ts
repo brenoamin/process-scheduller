@@ -1,9 +1,9 @@
-import {Scheduler} from "../types/Scheduler.ts";
-import {Process} from "../types/Process.ts";
-import {ProcessState} from "../types/ProcessState.ts";
+import {Process} from "../types/Process";
+import {ProcessState} from "../types/ProcessState";
+import {Scheduler} from "../types/Scheduler";
 
 export class EDFScheduler implements Scheduler {
-    schedule(processes: Process[], quantum: number, overhead: number): ProcessState[][] {
+    schedule(processes: Process[], quantum: number = 1, overhead: number = 1): ProcessState[][] {
         // Ordena os processos por tempo de chegada
         processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
@@ -21,11 +21,12 @@ export class EDFScheduler implements Scheduler {
             // Encontra o próximo processo com arrivalTime <= currentTime
             for (const process of processes) {
                 if (process.arrivalTime <= currentTime && !states[process.id - 1].length) {
-                    if (!nextProcess || (process.deadline || 0) < (nextProcess.deadline || 0)) {
+                    if (!nextProcess ||( process.deadline || 0) < (nextProcess.deadline || 0)) {
                         nextProcess = process;
                     }
                 }
             }
+
 
             // Se não houver mais processos para executar, saia do loop
             if (!nextProcess) {
@@ -33,36 +34,43 @@ export class EDFScheduler implements Scheduler {
             }
 
             // Preenche o estado NOT_READY para os processos que ainda não chegaram
-            while (states[nextProcess.id - 1].length < nextProcess.arrivalTime) {
-                states[nextProcess.id - 1].push(ProcessState.NOT_READY);
-            }
-
-            // Preenche o estado WAITING para os processos que chegaram, mas estão aguardando
-            while (states[nextProcess.id - 1].length < currentTime) {
-                states[nextProcess.id - 1].push(ProcessState.WAITING);
-            }
-
-            // Preenche o estado RUNNING para o tempo de execução do processo
-            for (let i = 0; i < Math.min(quantum, nextProcess.executionTime); i++) {
-                // Verifica se o processo está sendo executado após sua deadline
-                if (currentTime > (nextProcess.deadline || 0)) {
-                    states[nextProcess.id - 1].push(ProcessState.OVER_TIME);
-                } else {
-                    states[nextProcess.id - 1].push(ProcessState.RUNNING);
+            while (nextProcess.remainingTime > 0) {
+                while (states[nextProcess.id - 1].length < nextProcess.arrivalTime) {
+                    states[nextProcess.id - 1].push(ProcessState.NOT_READY);
                 }
-                currentTime++;
-                nextProcess.executionTime--;
-            }
 
-            // Adiciona a sobrecarga de troca de contexto ao tempo atual
-            for (let i = 0; i < overhead; i++) {
-                states[nextProcess.id - 1].push(ProcessState.OVERHEAD);
-                currentTime++;
-            }
+                // Preenche o estado WAITING para os processos que chegaram, mas estão aguardando
+                while (states[nextProcess.id - 1].length < currentTime) {
+                    states[nextProcess.id - 1].push(ProcessState.WAITING);
+                }
 
-            // Preenche o estado FINISHED para o restante do tempo
-            while (states[nextProcess.id - 1].length < currentTime) {
-                states[nextProcess.id - 1].push(ProcessState.FINISHED);
+                // Verifica se é necessário preempção devido ao quantum
+                const timeToExecute = Math.min(nextProcess.remainingTime, quantum);
+
+                // Preenche o estado RUNNING para o tempo de execução do processo
+                for (let i = 0; i < timeToExecute; i++) {
+                    states[nextProcess.id - 1].push(nextProcess.deadline <= currentTime ? ProcessState.OVER_TIME : ProcessState.RUNNING);
+                    nextProcess.remainingTime -= 1;
+                    currentTime++;
+                }
+
+
+                if (nextProcess.remainingTime > 0) {
+                    // Preenche o estado OVERHEAD para o tempo de sobrecarga
+                    for (let i = 0; i < overhead; i++) {
+                        states[nextProcess.id - 1].push(ProcessState.OVERHEAD);
+                        currentTime++;
+                    }
+                    // Preenche o estado WAITING para o restante do tempo se houver mais execução
+                    while (states[nextProcess.id - 1].length < currentTime) {
+                        states[nextProcess.id - 1].push(ProcessState.WAITING);
+                    }
+                } else {
+                    // Preenche o estado FINISHED para o restante do tempo
+                    while (states[nextProcess.id - 1].length < currentTime) {
+                        states[nextProcess.id - 1].push(ProcessState.FINISHED);
+                    }
+                }
             }
         }
 

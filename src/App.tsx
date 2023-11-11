@@ -11,12 +11,10 @@ import {EDFScheduler} from "./schedulers/EDFScheduler.ts";
 
 function App() {
   const processes: Process[] = [
-    { id: 1, arrivalTime: 1, executionTime: 2, deadline: 0 },
-    { id: 2, arrivalTime: 2, executionTime: 3, deadline: 0 },
-    { id: 3, arrivalTime: 3, executionTime: 4, deadline: 0 },
-    { id: 4, arrivalTime: 4, executionTime: 2, deadline: 0 },
-    { id: 5, arrivalTime: 5, executionTime: 1, deadline: 0 },
-    { id: 6, arrivalTime: 6, executionTime: 2, deadline: 0 },
+    new Process(1, 0, 2,5),
+    new Process(2, 2, 3,4),
+    new Process(3, 3, 4,3),
+    new Process(4, 4, 2,2),
   ];
 
   const scheduler = new EDFScheduler();
@@ -53,4 +51,71 @@ function App() {
   );
 }
 
+
+[
+  [
+    "NOT_READY",
+    "RUNNING",
+    "RUNNING",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED"
+  ],
+  [
+    "NOT_READY",
+    "NOT_READY",
+    "WAITING",
+    "RUNNING",
+    "RUNNING",
+    "OVERHEAD",
+    "OVER_TIME",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED",
+    "FINISHED"
+  ],
+  [
+    "NOT_READY",
+    "NOT_READY",
+    "NOT_READY",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "OVER_TIME",
+    "OVER_TIME",
+    "OVERHEAD",
+    "OVER_TIME",
+    "OVER_TIME",
+    "FINISHED",
+    "FINISHED"
+  ],
+  [
+    "NOT_READY",
+    "NOT_READY",
+    "NOT_READY",
+    "NOT_READY",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "WAITING",
+    "OVER_TIME",
+    "OVER_TIME"
+  ]
+]
 export default App;
