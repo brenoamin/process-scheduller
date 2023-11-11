@@ -1,0 +1,31 @@
+button {
+  all: unset;
+  box-sizing: border-box;
+  width: 300px;
+  height: 30px;
+  padding: 8px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Lato", sans-serif;
+  gap: 4px;
+  color: #000000;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 14px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(91.26deg, #07074d 0%, #ff57d3 97.77%);
+  box-shadow: 0px 2px 11px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+span {
+  color: #07074d;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 30px;
+}
