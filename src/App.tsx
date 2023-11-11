@@ -6,21 +6,23 @@ import { RAM } from "./components/RAM/RAM";
 import { Reset } from "./components/Reset";
 import { Run } from "./components/Run";
 import { SystemSettings } from "./components/SystemSettings";
+import { Process } from "./types/Process";
+import {EDFScheduler} from "./schedulers/EDFScheduler.ts";
 
 function App() {
-  // const processes: Process[] = [
-  //   { id: 1, arrivalTime: 0, executionTime: 2 },
-  //   { id: 2, arrivalTime: 2, executionTime: 3 },
-  //   { id: 3, arrivalTime: 4, executionTime: 4 },
-  //   { id: 4, arrivalTime: 0, executionTime: 2 },
-  //   { id: 5, arrivalTime: 0, executionTime: 1 },
-  //   { id: 6, arrivalTime: 0, executionTime: 2 },
-  // ];
+  const processes: Process[] = [
+    { id: 1, arrivalTime: 1, executionTime: 2, deadline: 0 },
+    { id: 2, arrivalTime: 2, executionTime: 3, deadline: 0 },
+    { id: 3, arrivalTime: 3, executionTime: 4, deadline: 0 },
+    { id: 4, arrivalTime: 4, executionTime: 2, deadline: 0 },
+    { id: 5, arrivalTime: 5, executionTime: 1, deadline: 0 },
+    { id: 6, arrivalTime: 6, executionTime: 2, deadline: 0 },
+  ];
 
-  // const scheduler = new RoundRobinScheduler();
-  // const scheduleResult = scheduler.schedule(processes, 2, 1);
+  const scheduler = new EDFScheduler();
+  const scheduleResult = scheduler.schedule(processes, 2, 1);
 
-  // console.log(scheduleResult);
+  console.log(scheduleResult);
   return (
     <div className="main-section">
       <header className="background-image">

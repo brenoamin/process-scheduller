@@ -2,6 +2,7 @@ export enum ProcessState {
   NOT_READY = "NOT_READY",
   RUNNING = "RUNNING",
   WAITING = "WAITING",
-  OVERRIDE = "OVERRIDE",
+  OVERHEAD = "OVERHEAD",
   FINISHED = "FINISHED",
+  OVER_TIME = "OVER_TIME",
 }

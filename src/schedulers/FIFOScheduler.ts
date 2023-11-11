@@ -10,29 +10,46 @@ export class FIFOScheduler implements Scheduler {
     // Inicializa a matriz de estados
     const states: ProcessState[][] = processes.map(() => []);
 
-    // Tempo atual
-    let currentTime = 0;
+    // Tempo atual começa no tempo de chegada do primeiro processo ou em 0
+    let currentTime = processes.length > 0 ? processes[0].arrivalTime : 0;
 
-    for (const process of processes) {
+    // Loop principal
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      let nextProcess: Process | undefined;
+
+      // Encontra o próximo processo com arrivalTime <= currentTime
+      for (const process of processes) {
+        if (process.arrivalTime <= currentTime && !states[process.id - 1].length) {
+          nextProcess = process;
+          break;
+        }
+      }
+
+      // Se não houver mais processos para executar, saia do loop
+      if (!nextProcess) {
+        break;
+      }
+
       // Preenche o estado NOT_READY para os processos que ainda não chegaram
-      while (states[process.id - 1].length < process.arrivalTime) {
-        states[process.id - 1].push(ProcessState.NOT_READY);
+      while (states[nextProcess.id - 1].length < nextProcess.arrivalTime) {
+        states[nextProcess.id - 1].push(ProcessState.NOT_READY);
       }
 
       // Preenche o estado WAITING para os processos que chegaram, mas estão aguardando
-      while (states[process.id - 1].length < currentTime) {
-        states[process.id - 1].push(ProcessState.WAITING);
+      while (states[nextProcess.id - 1].length < currentTime) {
+        states[nextProcess.id - 1].push(ProcessState.WAITING);
       }
 
       // Preenche o estado RUNNING para o tempo de execução do processo
-      for (let i = 0; i < process.executionTime; i++) {
-        states[process.id - 1].push(ProcessState.RUNNING);
+      for (let i = 0; i < nextProcess.executionTime; i++) {
+        states[nextProcess.id - 1].push(ProcessState.RUNNING);
         currentTime++;
       }
 
       // Preenche o estado FINISHED para o restante do tempo
-      while (states[process.id - 1].length < currentTime) {
-        states[process.id - 1].push(ProcessState.FINISHED);
+      while (states[nextProcess.id - 1].length < currentTime) {
+        states[nextProcess.id - 1].push(ProcessState.FINISHED);
       }
     }
 
