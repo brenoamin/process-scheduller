@@ -1,66 +1,45 @@
 import { InterfaceMemory } from "../types/Memory";
+import {Process} from "../types/Process.ts";
+import {ProcessState} from "../types/ProcessState.ts";
 
 export default class Memory implements InterfaceMemory {
-  private readonly _storage: (number | null)[];
-  private readonly storageCount: number;
+  private readonly processes: Process[]
+  private readonly scheduler: ProcessState[][]
 
-  constructor(storageCount: number, pageCount: number) {
-    if (storageCount < pageCount) {
-      throw new Error(
-        "Invalid parameters: storageCount must be greater than or equal to pageCount"
-      );
-    }
+  private disk: number[]
+  private ram: number[]
 
-    this.storageCount = storageCount / pageCount;
-    this._storage = new Array(this.storageCount).fill(null);
+  private time: number = 0
+
+  constructor(processes: Process[], scheduler: ProcessState[][]) {
+    this.processes = processes
+    this.scheduler = scheduler
+
+    this.loadDisk(this.processes)
+    this. buildMemory()
+  }
+  getDisk(): number[] {
+    return this.disk;
   }
 
-  get storageLeft(): number {
-    return this._storage.filter((storage) => storage === null).length;
+  getRam(): number[] {
+    return this.ram;
+  }
+  nextTime(): void {
+   this.time++;
+
+    this. buildMemory()
   }
 
-  get storage(): (number | null)[] {
-    return this._storage;
+  private buildMemory(): void {
+
   }
 
-  public processById(processId: number): number[] {
-    let processPages: number[] = [];
-    for (let i = 0; i < this.storageCount; i++) {
-      if (this._storage[i] == processId) {
-        processPages.push(i);
+  private loadDisk(processes: Process[]) {
+    processes.forEach(process => {
+      for(let i = 0; i < process.numPages; i++) {
+        this.disk.push(process.id)
       }
-    }
-    return processPages;
-  }
-
-  public storePage(processId: number, numPages: number): void {
-    let storedCount: number = 0;
-
-    if (this.storageLeft < numPages) {
-      console.log("Not enough storage left");
-    } else {
-      for (let i = 0; i < this.storageCount; i++) {
-        if (this._storage[i] === null) {
-          this._storage[i] = processId;
-          storedCount++;
-          if (storedCount == numPages) {
-            break;
-          }
-        }
-      }
-    }
-  }
-
-  public freeUpSpace(processId: number, numPages: number): void {
-    let spaceFreeCount: number = 0;
-    for (let i = 0; i < this.storageCount; i++) {
-      if (this._storage[i] == processId) {
-        this._storage[i] = null;
-        spaceFreeCount++;
-        if (spaceFreeCount == numPages) {
-          break;
-        }
-      }
-    }
+    })
   }
 }
