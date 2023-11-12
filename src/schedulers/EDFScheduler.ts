@@ -2,6 +2,8 @@ import {Process} from "../types/Process";
 import {ProcessState} from "../types/ProcessState";
 import {Scheduler} from "../types/Scheduler";
 
+
+
 export class EDFScheduler implements Scheduler {
     schedule(processes: Process[], quantum: number = 1, overhead: number = 1): ProcessState[][] {
         // Ordena os processos por tempo de chegada
@@ -13,19 +15,30 @@ export class EDFScheduler implements Scheduler {
         // Tempo atual começa no tempo de chegada do primeiro processo ou em 0
         let currentTime = processes.length > 0 ? processes[0].arrivalTime : 0;
 
-        // Loop principal
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
+        const getNextProcess = (actual: Process) => {
             let nextProcess: Process | undefined;
 
-            // Encontra o próximo processo com arrivalTime <= currentTime
             for (const process of processes) {
-                if (process.arrivalTime <= currentTime && !states[process.id - 1].length) {
-                    if (!nextProcess ||( process.deadline || 0) < (nextProcess.deadline || 0)) {
+                if (process.arrivalTime <= currentTime && !states[process.id - 1].includes(ProcessState.FINISHED)) {
+                    if (!actual ||( process.deadline || 0) < (actual.deadline || 0)) {
                         nextProcess = process;
                     }
                 }
             }
+
+            return nextProcess || actual;
+        }
+
+
+        // Loop principal
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+
+            // Redefine nextProcess para undefined no início de cada iteração
+            let nextProcess: Process | undefined = undefined;
+
+            // Encontra o próximo processo com arrivalTime <= currentTime
+            nextProcess = getNextProcess(nextProcess)
 
 
             // Se não houver mais processos para executar, saia do loop
@@ -40,8 +53,10 @@ export class EDFScheduler implements Scheduler {
                 }
 
                 // Preenche o estado WAITING para os processos que chegaram, mas estão aguardando
-                while (states[nextProcess.id - 1].length < currentTime) {
-                    states[nextProcess.id - 1].push(ProcessState.WAITING);
+                if (nextProcess.arrivalTime <= currentTime) {
+                    while (states[nextProcess.id - 1].length < currentTime) {
+                        states[nextProcess.id - 1].push(ProcessState.WAITING);
+                    }
                 }
 
                 // Verifica se é necessário preempção devido ao quantum
@@ -61,6 +76,16 @@ export class EDFScheduler implements Scheduler {
                         states[nextProcess.id - 1].push(ProcessState.OVERHEAD);
                         currentTime++;
                     }
+
+                    // Verifica se há algum processo com um prazo menor disponível
+                    const newNextProcess = getNextProcess(nextProcess)
+
+                    // Se o próximo processo a ser executado mudou, interrompe a execução do processo atual
+                    if (newNextProcess.id !== nextProcess.id) {
+                        nextProcess = newNextProcess;
+                        continue;
+                    }
+
                     // Preenche o estado WAITING para o restante do tempo se houver mais execução
                     while (states[nextProcess.id - 1].length < currentTime) {
                         states[nextProcess.id - 1].push(ProcessState.WAITING);
@@ -72,6 +97,10 @@ export class EDFScheduler implements Scheduler {
                     }
                 }
             }
+            // Define o estado FINISHED para o processo atual se ele terminou
+            if (nextProcess.remainingTime === 0) {
+                states[nextProcess.id - 1].push(ProcessState.FINISHED);
+            }
         }
 
         // Preenche o estado FINISHED para todos os processos após o último processo ter terminado
@@ -80,6 +109,10 @@ export class EDFScheduler implements Scheduler {
                 state.push(ProcessState.FINISHED);
             }
         }
+
+        states.reduce((prev, current) => {
+            return current.length > prev.length ? current : prev;
+        }, []).pop();
 
         return states;
     }

@@ -11,10 +11,10 @@ import {EDFScheduler} from "./schedulers/EDFScheduler.ts";
 
 function App() {
   const processes: Process[] = [
-    new Process(1, 0, 2,5),
-    new Process(2, 2, 3,4),
-    new Process(3, 3, 4,3),
-    new Process(4, 4, 2,2),
+    new Process(1, 0, 4,35),
+    new Process(2, 3, 2,15),
+    //new Process(3, 6, 7,20),
+    //new Process(4, 9, 8,25),
   ];
 
   const scheduler = new EDFScheduler();
