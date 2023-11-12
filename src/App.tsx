@@ -9,6 +9,8 @@ import { SystemSettings } from "./components/SystemSettings";
 import { Process } from "./types/Process";
 import { EDFScheduler } from "./schedulers/EDFScheduler.ts";
 import Memory from "./storage/Memory.ts";
+import { SchedulerFactory } from "./schedulers/index.ts";
+import { Method } from "./types/Method.ts";
 
 function App() {
   const processes: Process[] = [
@@ -29,12 +31,16 @@ function App() {
   // memory.storePage(1, 8);
 
 
-  console.log(memory.storage);
+  // console.log(memory.storage);
 
-  // const scheduler = new EDFScheduler();
-  // const scheduleResult = scheduler.schedule(processes, 2, 1);
+  const EDF = Method.EDF;
 
-  // console.log(scheduleResult);
+  const scheduler = SchedulerFactory.chooseScheduler(EDF);
+  const scheduleResult = scheduler.schedule(processes, 2, 1);
+
+  console.log(scheduleResult);
+
+  
   return (
     <div className="main-section">
       <header className="background-image">
