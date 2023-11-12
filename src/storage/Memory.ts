@@ -23,6 +23,16 @@ export default class Memory implements InterfaceMemory {
     return this._storage;
   }
 
+  public processById(processId: number): number[] {
+    let processPages: number[] = [];
+    for (let i = 0; i < this.storageCount; i++) {
+      if (this._storage[i] == processId) {
+        processPages.push(i);
+      }
+    }
+    return processPages;
+  }
+
   public storePage(processId: number, numPages: number): void {
     let storedCount: number = 0;
 
