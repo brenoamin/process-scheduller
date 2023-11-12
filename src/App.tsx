@@ -7,20 +7,34 @@ import { Reset } from "./components/Reset";
 import { Run } from "./components/Run";
 import { SystemSettings } from "./components/SystemSettings";
 import { Process } from "./types/Process";
-import {EDFScheduler} from "./schedulers/EDFScheduler.ts";
+import { EDFScheduler } from "./schedulers/EDFScheduler.ts";
+import Memory from "./storage/Memory.ts";
 
 function App() {
   const processes: Process[] = [
-    new Process(1, 0, 4,35),
-    new Process(2, 3, 2,15),
+    new Process(1, 0, 4, 35),
+    new Process(2, 3, 2, 15),
     //new Process(3, 6, 7,20),
     //new Process(4, 9, 8,25),
   ];
 
-  const scheduler = new EDFScheduler();
-  const scheduleResult = scheduler.schedule(processes, 2, 1);
+  const memory: Memory = new Memory(16, 4);
 
-  console.log(scheduleResult);
+  memory.storePage(2, 1);
+  memory.storePage(3, 2);
+  memory.storePage(4, 1);
+  memory.freeUpSpace(3,2)
+
+  // memory.freeUpSpace(1, 5);
+  // memory.storePage(1, 8);
+
+
+  console.log(memory.storage);
+
+  // const scheduler = new EDFScheduler();
+  // const scheduleResult = scheduler.schedule(processes, 2, 1);
+
+  // console.log(scheduleResult);
   return (
     <div className="main-section">
       <header className="background-image">
@@ -51,7 +65,6 @@ function App() {
   );
 }
 
-
 [
   [
     "NOT_READY",
@@ -67,7 +80,7 @@ function App() {
     "FINISHED",
     "FINISHED",
     "FINISHED",
-    "FINISHED"
+    "FINISHED",
   ],
   [
     "NOT_READY",
@@ -83,7 +96,7 @@ function App() {
     "FINISHED",
     "FINISHED",
     "FINISHED",
-    "FINISHED"
+    "FINISHED",
   ],
   [
     "NOT_READY",
@@ -99,7 +112,7 @@ function App() {
     "OVER_TIME",
     "OVER_TIME",
     "FINISHED",
-    "FINISHED"
+    "FINISHED",
   ],
   [
     "NOT_READY",
@@ -115,7 +128,7 @@ function App() {
     "WAITING",
     "WAITING",
     "OVER_TIME",
-    "OVER_TIME"
-  ]
-]
+    "OVER_TIME",
+  ],
+];
 export default App;
