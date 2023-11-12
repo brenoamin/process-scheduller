@@ -1,88 +1,87 @@
-// export class RoundRobinScheduler implements Scheduler {
-//   schedule(
-//     processes: Process[],
-//     quantum: number = 1,
-//     override: number = 0
-//   ): ProcessState[][] {
-//     // Ordena os processos por tempo de chegada
-//     processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
-//     // Inicializa a matriz de estados
-//     const states: ProcessState[][] = processes.map(() => []);
-//     // Tempo atual
-//     let currentTime = 0;
-//     // Fila de processos prontos
-//     const readyQueue: Process[] = [];
-//     // Índice do processo atual na fila de processos prontos
-//     let currentProcessIndex = 0;
-//     // Adiciona processos que chegaram ao tempo atual à fila de processos prontos
-//     for (const process of processes) {
-//       if (process.arrivalTime === currentTime) {
-//         readyQueue.push(process);
-//       }
-//     }
-//     while (processes.some((process) => process.executionTime > 0)) {
-//       if (readyQueue.length > 0) {
-//         // Obtém o processo atual
-//         const currentProcess = readyQueue[currentProcessIndex];
-//         // Executa o processo atual por um quantum
-//         for (let i = 0; i < quantum && currentProcess.executionTime > 0; i++) {
-//           states[currentProcess.id - 1].push(ProcessState.RUNNING);
-//           currentProcess.executionTime--;
-//           currentTime++;
-//         }
-//         // Se o processo atual terminou, remove-o da fila de processos prontos
-//         if (currentProcess.executionTime === 0) {
-//           readyQueue.splice(currentProcessIndex, 1);
-//           // Se o processo atual foi removido, ajusta o índice do processo atual
-//           if (currentProcessIndex >= readyQueue.length) {
-//             currentProcessIndex = 0;
-//           }
-//         } else {
-//           // Caso contrário, move para o próximo processo
-//           currentProcessIndex = (currentProcessIndex + 1) % readyQueue.length;
-//           // Adiciona o tempo de sobrecarga
-//           for (let i = 0; i < override; i++) {
-//             states[currentProcess.id - 1].push(ProcessState.OVERRIDE);
-//             currentTime++;
-//           }
-//         }
-//       } else {
-//         // Se não há processos prontos, avança o tempo até o próximo processo chegar
-//         const nextArrivalTime = Math.min(
-//           ...processes.map((p) => p.arrivalTime)
-//         );
-//         currentTime = nextArrivalTime;
-//       }
-//       // Adiciona processos que chegaram ao tempo atual à fila de processos prontos
-//       for (const process of processes) {
-//         if (
-//           process.arrivalTime === currentTime &&
-//           !readyQueue.includes(process)
-//         ) {
-//           readyQueue.push(process);
-//         }
-//       }
-//       // Preenche o estado WAITING para os outros processos na fila de processos prontos
-//       for (const process of readyQueue) {
-//         while (states[process.id - 1].length < currentTime) {
-//           states[process.id - 1].push(ProcessState.WAITING);
-//         }
-//       }
-//       // Preenche o estado NOT_READY para os processos que ainda não chegaram
-//       for (const process of processes) {
-//         if (process.arrivalTime > currentTime) {
-//           while (states[process.id - 1].length < currentTime) {
-//             states[process.id - 1].push(ProcessState.NOT_READY);
-//           }
-//         }
-//       }
-//     }
-//     // Preenche o estado FINISHED para todos os processos após o último processo ter terminado
-//     for (const state of states) {
-//       while (state.length < currentTime) {
-//         state.push(ProcessState.FINISHED);
-//       }
-//     }
-//     return states;
-//   }
-// }
+import {Scheduler} from "../types/Scheduler.ts";
+import {Process} from "../types/Process.ts";
+import {ProcessState} from "../types/ProcessState.ts";
+
+export class RoundRobinScheduler implements Scheduler {
+    schedule(processes: Process[], quantum: number = 1, overhead: number = 1): ProcessState[][] {
+        // Ordena os processos por tempo de chegada
+        processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
+
+        const queue: Process[] = [...processes];
+
+        // Inicializa a matriz de estados
+        const states: ProcessState[][] = processes.map(() => []);
+
+        // Tempo atual começa no tempo de chegada do primeiro processo ou em 0
+        let currentTime = processes.length > 0 ? processes[0].arrivalTime : 0;
+
+
+        // Loop principal
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+
+            // Se não houver mais processos para executar, saia do loop
+            if (queue.length === 0) {
+                break;
+            }
+            // Pega o próximo processo da fila
+            const nextProcess = queue.shift() as Process;
+
+            // Preenche o estado NOT_READY para os processos que ainda não chegaram
+
+            while (states[nextProcess.id - 1].length < nextProcess.arrivalTime) {
+                states[nextProcess.id - 1].push(ProcessState.NOT_READY);
+            }
+
+            // Preenche o estado WAITING para os processos que chegaram, mas estão aguardando
+            if (nextProcess.arrivalTime <= currentTime) {
+                while (states[nextProcess.id - 1].length < currentTime) {
+                    states[nextProcess.id - 1].push(ProcessState.WAITING);
+                }
+            }
+
+            // Verifica se é necessário preempção devido ao quantum
+            const timeToExecute = Math.min(nextProcess.remainingTime, quantum);
+
+            // Preenche o estado RUNNING para o tempo de execução do processo
+            for (let i = 0; i < timeToExecute; i++) {
+                states[nextProcess.id - 1].push(ProcessState.RUNNING);
+                nextProcess.remainingTime--;
+                currentTime++;
+            }
+
+            if (nextProcess.remainingTime > 0) {
+                // Preenche o estado OVERHEAD para o tempo de sobrecarga
+                for (let i = 0; i < overhead; i++) {
+                    states[nextProcess.id - 1].push(ProcessState.OVERHEAD);
+                    currentTime++;
+                }
+
+                // Encontra o índice do primeiro processo na fila cujo tempo de chegada é maior que o tempo atual + 1
+                const index = queue.findIndex(process => process.arrivalTime > currentTime + 1);
+
+                if (index === -1) {
+                    // Se não houver tal processo, adiciona o processo ao final da fila
+                    queue.push(nextProcess);
+                } else {
+                    // Caso contrário, insere o processo na posição encontrada
+                    queue.splice(index, 0, nextProcess);
+                }
+            } else {
+                // Preenche o estado FINISHED para o restante do tempo
+                while (states[nextProcess.id - 1].length < currentTime) {
+                    states[nextProcess.id - 1].push(ProcessState.FINISHED);
+                }
+            }
+        }
+
+        // Preenche o estado FINISHED para todos os processos após o último processo ter terminado
+        for (const state of states) {
+            while (state.length < currentTime) {
+                state.push(ProcessState.FINISHED);
+            }
+        }
+
+        return states;
+    }
+}
