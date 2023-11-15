@@ -9,7 +9,7 @@ interface SystemSettingsProps extends Conditions {
 export const SystemSettings = ({
   delay,
   method,
-  override,
+  overhead,
   pagination,
   quantum,
   setSystemSettings,
@@ -22,7 +22,7 @@ export const SystemSettings = ({
       parsedValue = 0;
     } else if (name === "quantum" && parsedValue < 0) {
       parsedValue = 0;
-    } else if (name === "override" && parsedValue < 1) {
+    } else if (name === "overhead" && parsedValue < 1) {
       parsedValue = 1;
     }
 
@@ -127,12 +127,12 @@ export const SystemSettings = ({
               </label>
               <input
                 type="number"
-                name="override"
+                name="overhead"
                 placeholder="1"
                 id="sobrecarga"
                 className="form-input"
                 min="1"
-                value={override || 1}
+                value={overhead || 1}
                 onChange={handleChange}
               />
             </div>

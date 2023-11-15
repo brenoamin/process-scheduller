@@ -1,7 +1,9 @@
+import { Method } from "./Method";
+
 export type Conditions = {
-  method: "FIFO" | "RR" | "SJF" | "EDF";
+  method: Method;
   pagination: "FIFO" | "LRU";
   quantum: number;
-  override: number;
+  overhead: number;
   delay: number;
 };

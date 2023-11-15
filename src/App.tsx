@@ -9,6 +9,8 @@ import { Run } from "./components/Run";
 import { SystemSettings } from "./components/SystemSettings";
 import { Process } from "./types/Process";
 import { Conditions } from "./types/Conditions";
+import { SchedulerFactory } from "./schedulers";
+import { Method } from "./types/Method";
 
 function App() {
   const [processes, setProcesses] = useState<Process[]>([
@@ -16,10 +18,10 @@ function App() {
   ]);
 
   const [systemSettings, setSystemSettings] = useState<Conditions>({
-    method: "FIFO",
+    method: Method.FIFO,
     pagination: "FIFO",
     quantum: 0,
-    override: 1,
+    overhead: 1,
     delay: 0,
   });
 
@@ -41,6 +43,16 @@ function App() {
     console.log("Processes", processes);
 
     console.log("System Settings", systemSettings);
+
+    const scheduler = SchedulerFactory.chooseScheduler(systemSettings.method);
+
+    const result = scheduler.schedule(
+      processes,
+      systemSettings.quantum,
+      systemSettings.overhead
+    );
+
+    console.log("result", result);
   };
 
   return (
