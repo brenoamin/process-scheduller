@@ -1,5 +1,5 @@
 export interface InterfaceMemory {
   nextTime(): void,
-  getRam(): number[],
-  getDisk(): number[],
+  getRam(): (number | null)[],
+  getDisk(): (number | null)[],
 }
