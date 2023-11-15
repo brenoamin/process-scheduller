@@ -45,10 +45,14 @@ function App() {
     setProcesses([...processes, newProcess]);
   };
 
-  function handleDelete(id: number): void {
+  const handleDelete = (id: number): void => {
     const newProcesses = processes.filter((process) => process.id !== id);
     setProcesses(newProcesses);
-  }
+  };
+
+  const getProcessData = (): void => {
+    console.log("Processes", processes);
+  };
 
   return (
     <div className="main-section">
@@ -68,6 +72,7 @@ function App() {
               numPages={process.numPages}
               executionTime={process.executionTime}
               onClose={() => handleDelete(process.id)}
+              setProcesses={setProcesses}
             />
           ))}
         </div>
@@ -78,7 +83,11 @@ function App() {
         </div>
         <div>
           <div>
-            <Run title="Run" onClick={() => {}} />
+            <Run
+              title="Run"
+              onClick={() => {}}
+              getProcessData={getProcessData}
+            />
           </div>
         </div>
         <div>

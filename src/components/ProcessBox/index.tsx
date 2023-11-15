@@ -1,6 +1,7 @@
-import { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect } from "react";
 import close from "../../assets/close-button.svg";
 import "./index.css";
+import { Process } from "../../types/Process";
 
 interface ProcessBoxProps {
   id: number;
@@ -9,6 +10,7 @@ interface ProcessBoxProps {
   numPages: number;
   deadline: number;
   onClose: () => void;
+  setProcesses: React.Dispatch<React.SetStateAction<Process[]>>;
 }
 
 export const ProcessBox = ({
@@ -18,26 +20,10 @@ export const ProcessBox = ({
   numPages,
   deadline,
   onClose,
+  setProcesses,
 }: ProcessBoxProps): ReactElement => {
-  const [processProperty, setProcessProperty] = useState({
-    arrivalTime: arrivalTime,
-    executionTime: executionTime,
-    numPages: numPages,
-    deadline: deadline,
-  });
-
-  // useEffect(() => {
-  //   setProcessProperty({
-  //     arrivalTime: arrivalTime,
-  //     executionTime: executionTime,
-  //     deadline: deadline,
-  //     numPages: numPages,
-  //   });
-  // }, [arrivalTime, executionTime, deadline, numPages]);
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-
     let parsedValue = parseInt(value, 10);
 
     if (name === "arrivalTime" && parsedValue < 0) {
@@ -50,11 +36,33 @@ export const ProcessBox = ({
       parsedValue = 1;
     }
 
-    setProcessProperty((prevValues) => ({
-      ...prevValues,
-      [name]: parsedValue,
-    }));
+    setProcesses((prevProcesses) =>
+      prevProcesses.map((process) =>
+        process.id === id
+          ? {
+              ...process,
+              [name]: parsedValue,
+            }
+          : process
+      )
+    );
   };
+
+  // useEffect(() => {
+  //   setProcesses((prevProcesses) =>
+  //     prevProcesses.map((process) =>
+  //       process.id === id
+  //         ? {
+  //             ...process,
+  //             arrivalTime,
+  //             executionTime,
+  //             numPages,
+  //             deadline,
+  //           }
+  //         : process
+  //     )
+  //   );
+  // }, [id, arrivalTime, executionTime, numPages, deadline, setProcesses]);
 
   const handleProcessClose = () => {
     onClose();
@@ -80,7 +88,7 @@ export const ProcessBox = ({
               name="arrivalTime"
               placeholder="0"
               id="arrival"
-              value={processProperty.arrivalTime}
+              value={arrivalTime}
               className="form-input"
               onChange={handleChange}
               min="0"
@@ -96,7 +104,7 @@ export const ProcessBox = ({
               name="executionTime"
               placeholder="1"
               id="execution"
-              value={processProperty.executionTime}
+              value={executionTime}
               className="form-input"
               onChange={handleChange}
               min="1"
@@ -115,7 +123,7 @@ export const ProcessBox = ({
               name="deadline"
               id="deadline"
               placeholder="0"
-              value={processProperty.deadline}
+              value={deadline}
               className="form-input"
               onChange={handleChange}
               min="0"
@@ -131,7 +139,7 @@ export const ProcessBox = ({
               name="numPages"
               placeholder="1"
               id="numPages"
-              value={processProperty.numPages}
+              value={numPages}
               onChange={handleChange}
               className="form-input"
               min="1"
