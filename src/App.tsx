@@ -12,22 +12,7 @@ import { Conditions } from "./types/Conditions";
 
 function App() {
   const [processes, setProcesses] = useState<Process[]>([
-    {
-      id: 1,
-      arrivalTime: 0,
-      executionTime: 4,
-      numPages: 35,
-      deadline: 0,
-      remainingTime: 0,
-    },
-    {
-      id: 2,
-      arrivalTime: 3,
-      executionTime: 2,
-      numPages: 15,
-      deadline: 0,
-      remainingTime: 0,
-    },
+    new Process(1, 0, 4, 0, 35),
   ]);
 
   const [systemSettings, setSystemSettings] = useState<Conditions>({
@@ -42,14 +27,7 @@ function App() {
     const nextId =
       processes.length > 0 ? processes[processes.length - 1].id + 1 : 1;
 
-    const newProcess: Process = {
-      id: nextId,
-      arrivalTime: 0,
-      executionTime: 1,
-      numPages: 1,
-      deadline: 0,
-      remainingTime: 0,
-    };
+    const newProcess: Process = new Process(nextId, 0, 1, 0, 1);
 
     setProcesses([...processes, newProcess]);
   };

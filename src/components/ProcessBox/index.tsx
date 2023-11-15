@@ -39,10 +39,13 @@ export const ProcessBox = ({
     setProcesses((prevProcesses) =>
       prevProcesses.map((process) =>
         process.id === id
-          ? {
-              ...process,
-              [name]: parsedValue,
-            }
+          ? new Process(
+              process.id,
+              name === "arrivalTime" ? parsedValue : process.arrivalTime,
+              name === "executionTime" ? parsedValue : process.executionTime,
+              name === "deadline" ? parsedValue : process.deadline,
+              name === "numPages" ? parsedValue : process.numPages
+            )
           : process
       )
     );
