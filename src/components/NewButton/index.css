@@ -18,7 +18,7 @@
   cursor: pointer;
 }
 
-.new-button-title {
+.button-title {
   color: #07074d;
   font-weight: 700;
   font-size: 18px;
@@ -36,7 +36,7 @@
 .new-button-wrapper:hover {
   border-color: #90e0ef;
 
-  .new-button-title {
+  .button-title {
     color: #90e0ef;
   }
 }
