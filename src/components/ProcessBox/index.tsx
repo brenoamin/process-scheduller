@@ -1,16 +1,73 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import close from "../../assets/close-button.svg";
 import "./index.css";
 
-export const ProcessBox = (): ReactElement => {
+interface ProcessBoxProps {
+  id: number;
+  arrivalTime: number;
+  executionTime: number;
+  numPages: number;
+  deadline: number;
+  onClose: () => void;
+}
+
+export const ProcessBox = ({
+  id,
+  arrivalTime,
+  executionTime,
+  numPages,
+  deadline,
+  onClose,
+}: ProcessBoxProps): ReactElement => {
+  const [processProperty, setProcessProperty] = useState({
+    arrivalTime: arrivalTime,
+    executionTime: executionTime,
+    numPages: numPages,
+    deadline: deadline,
+  });
+
+  // useEffect(() => {
+  //   setProcessProperty({
+  //     arrivalTime: arrivalTime,
+  //     executionTime: executionTime,
+  //     deadline: deadline,
+  //     numPages: numPages,
+  //   });
+  // }, [arrivalTime, executionTime, deadline, numPages]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    let parsedValue = parseInt(value, 10);
+
+    if (name === "arrivalTime" && parsedValue < 0) {
+      parsedValue = 0;
+    } else if (name === "executionTime" && parsedValue < 1) {
+      parsedValue = 1;
+    } else if (name === "deadline" && parsedValue < 0) {
+      parsedValue = 0;
+    } else if (name === "numPages" && parsedValue < 1) {
+      parsedValue = 1;
+    }
+
+    setProcessProperty((prevValues) => ({
+      ...prevValues,
+      [name]: parsedValue,
+    }));
+  };
+
+  const handleProcessClose = () => {
+    onClose();
+  };
+
   return (
     <div className="form-wrapper">
       <form onSubmit={(event) => event.preventDefault()}>
         <div className="form-close-container">
-          <img src={close} alt="Close button" />
+          <img src={close} alt="Close button" onClick={handleProcessClose} />
         </div>
         <div className="form-title">
-          <span>Processo: </span>
+          <span>Processo: {id} </span>
         </div>
         <div className="input-flex">
           <div>
@@ -20,10 +77,12 @@ export const ProcessBox = (): ReactElement => {
             </label>
             <input
               type="number"
-              name="arrival"
+              name="arrivalTime"
               placeholder="0"
               id="arrival"
+              value={processProperty.arrivalTime}
               className="form-input"
+              onChange={handleChange}
               min="0"
             />
           </div>
@@ -34,10 +93,12 @@ export const ProcessBox = (): ReactElement => {
             </label>
             <input
               type="number"
-              name="execution"
+              name="executionTime"
               placeholder="1"
               id="execution"
+              value={processProperty.executionTime}
               className="form-input"
+              onChange={handleChange}
               min="1"
             />
           </div>
@@ -54,7 +115,9 @@ export const ProcessBox = (): ReactElement => {
               name="deadline"
               id="deadline"
               placeholder="0"
+              value={processProperty.deadline}
               className="form-input"
+              onChange={handleChange}
               min="0"
             />
           </div>
@@ -68,6 +131,8 @@ export const ProcessBox = (): ReactElement => {
               name="numPages"
               placeholder="1"
               id="numPages"
+              value={processProperty.numPages}
+              onChange={handleChange}
               className="form-input"
               min="1"
             />

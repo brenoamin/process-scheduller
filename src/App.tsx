@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "./App.css";
 import { DiskMatrix } from "./components/Disk";
 import { NewButton } from "./components/NewButton";
@@ -7,40 +8,48 @@ import { Reset } from "./components/Reset";
 import { Run } from "./components/Run";
 import { SystemSettings } from "./components/SystemSettings";
 import { Process } from "./types/Process";
-import { EDFScheduler } from "./schedulers/EDFScheduler.ts";
-import Memory from "./storage/Memory.ts";
-import { SchedulerFactory } from "./schedulers/index.ts";
-import { Method } from "./types/Method.ts";
 
 function App() {
-  const processes: Process[] = [
-    new Process(1, 0, 4, 35),
-    new Process(2, 3, 2, 15),
-    //new Process(3, 6, 7,20),
-    //new Process(4, 9, 8,25),
-  ];
+  const [processes, setProcesses] = useState<Process[]>([
+    {
+      id: 1,
+      arrivalTime: 0,
+      executionTime: 4,
+      numPages: 35,
+      deadline: 0,
+      remainingTime: 0,
+    },
+    {
+      id: 2,
+      arrivalTime: 3,
+      executionTime: 2,
+      numPages: 15,
+      deadline: 0,
+      remainingTime: 0,
+    },
+  ]);
 
-  const memory: Memory = new Memory(16, 4);
+  const handleAddProcess = (): void => {
+    const nextId =
+      processes.length > 0 ? processes[processes.length - 1].id + 1 : 1;
 
-  memory.storePage(2, 1);
-  memory.storePage(3, 2);
-  memory.storePage(4, 1);
-  memory.freeUpSpace(3,2)
+    const newProcess: Process = {
+      id: nextId,
+      arrivalTime: 0,
+      executionTime: 1,
+      numPages: 1,
+      deadline: 0,
+      remainingTime: 0,
+    };
 
-  // memory.freeUpSpace(1, 5);
-  // memory.storePage(1, 8);
+    setProcesses([...processes, newProcess]);
+  };
 
+  function handleDelete(id: number): void {
+    const newProcesses = processes.filter((process) => process.id !== id);
+    setProcesses(newProcesses);
+  }
 
-  // console.log(memory.storage);
-
-  const EDF = Method.EDF;
-
-  const scheduler = SchedulerFactory.chooseScheduler(EDF);
-  const scheduleResult = scheduler.schedule(processes, 2, 1);
-
-  console.log(scheduleResult);
-
-  
   return (
     <div className="main-section">
       <header className="background-image">
@@ -49,8 +58,18 @@ function App() {
       <div>
         <div className="process-section">
           <SystemSettings />
-          <NewButton />
-          <ProcessBox />
+          <NewButton onClick={handleAddProcess} />
+          {processes.map((process) => (
+            <ProcessBox
+              key={process.id}
+              id={process.id}
+              deadline={process.deadline}
+              arrivalTime={process.arrivalTime}
+              numPages={process.numPages}
+              executionTime={process.executionTime}
+              onClose={() => handleDelete(process.id)}
+            />
+          ))}
         </div>
 
         <div className="memory-section">
@@ -58,7 +77,6 @@ function App() {
           <RAM />
         </div>
         <div>
-          {/* <Gantt></Gantt> */}
           <div>
             <Run title="Run" onClick={() => {}} />
           </div>
@@ -71,70 +89,4 @@ function App() {
   );
 }
 
-[
-  [
-    "NOT_READY",
-    "RUNNING",
-    "RUNNING",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-  ],
-  [
-    "NOT_READY",
-    "NOT_READY",
-    "WAITING",
-    "RUNNING",
-    "RUNNING",
-    "OVERHEAD",
-    "OVER_TIME",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-    "FINISHED",
-  ],
-  [
-    "NOT_READY",
-    "NOT_READY",
-    "NOT_READY",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "OVER_TIME",
-    "OVER_TIME",
-    "OVERHEAD",
-    "OVER_TIME",
-    "OVER_TIME",
-    "FINISHED",
-    "FINISHED",
-  ],
-  [
-    "NOT_READY",
-    "NOT_READY",
-    "NOT_READY",
-    "NOT_READY",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "WAITING",
-    "OVER_TIME",
-    "OVER_TIME",
-  ],
-];
 export default App;
