@@ -85,7 +85,7 @@ function App() {
           <DiskMatrix />
           <RAM />
         </div>
-        <div>
+        <div className="control-system">
           <div>
             <Run
               title="Run"
@@ -93,9 +93,9 @@ function App() {
               getProcessData={getProcessData}
             />
           </div>
-        </div>
-        <div>
-          <Reset title="Reset" onClick={() => {}} />
+          <div>
+            <Reset title="Reset" onClick={() => {}} />
+          </div>
         </div>
       </div>
     </div>

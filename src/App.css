@@ -19,7 +19,7 @@
   gap: 30px;
   margin-top: 20px;
 }
-.memory-section{
+.memory-section {
   display: flex;
 }
 
@@ -39,4 +39,11 @@
   line-height: 40px;
   letter-spacing: 15px;
   color: #07074d;
+}
+.control-system {
+  display: flex;
+  gap: 10px;
+  padding-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
