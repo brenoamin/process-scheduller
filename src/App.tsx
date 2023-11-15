@@ -8,6 +8,7 @@ import { Reset } from "./components/Reset";
 import { Run } from "./components/Run";
 import { SystemSettings } from "./components/SystemSettings";
 import { Process } from "./types/Process";
+import { Conditions } from "./types/Conditions";
 
 function App() {
   const [processes, setProcesses] = useState<Process[]>([
@@ -28,6 +29,14 @@ function App() {
       remainingTime: 0,
     },
   ]);
+
+  const [systemSettings, setSystemSettings] = useState<Conditions>({
+    method: "FIFO",
+    pagination: "FIFO",
+    quantum: 0,
+    override: 1,
+    delay: 0,
+  });
 
   const handleAddProcess = (): void => {
     const nextId =
@@ -52,6 +61,8 @@ function App() {
 
   const getProcessData = (): void => {
     console.log("Processes", processes);
+
+    console.log("System Settings", systemSettings);
   };
 
   return (
@@ -61,7 +72,10 @@ function App() {
       </header>
       <div>
         <div className="process-section">
-          <SystemSettings />
+          <SystemSettings
+            {...systemSettings}
+            setSystemSettings={setSystemSettings}
+          />
           <NewButton onClick={handleAddProcess} />
           {processes.map((process) => (
             <ProcessBox

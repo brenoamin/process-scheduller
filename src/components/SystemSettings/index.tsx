@@ -1,6 +1,46 @@
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 import "./index.css";
-export const SystemSettings = (): ReactElement => {
+import { Conditions } from "../../types/Conditions";
+
+interface SystemSettingsProps extends Conditions {
+  setSystemSettings: React.Dispatch<React.SetStateAction<Conditions>>;
+}
+
+export const SystemSettings = ({
+  delay,
+  method,
+  override,
+  pagination,
+  quantum,
+  setSystemSettings,
+}: SystemSettingsProps): ReactElement => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    let parsedValue = parseInt(value, 10);
+
+    if (name === "delay" && parsedValue < 0) {
+      parsedValue = 0;
+    } else if (name === "quantum" && parsedValue < 0) {
+      parsedValue = 0;
+    } else if (name === "override" && parsedValue < 1) {
+      parsedValue = 1;
+    }
+
+    setSystemSettings((prevSettings) => ({
+      ...prevSettings,
+      [name]: parsedValue,
+    }));
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = event.target;
+
+    setSystemSettings((prevSettings) => ({
+      ...prevSettings,
+      [name]: value,
+    }));
+  };
+
   return (
     <div className="scaling-system">
       <form onSubmit={(e) => e.preventDefault()}>
@@ -16,13 +56,15 @@ export const SystemSettings = (): ReactElement => {
               Algoritmo de escalonamento:
             </label>
             <select
-              name="scaling-system-algorithm"
+              name="method"
               id="scaling-system-algorithm"
+              value={method || "FIFO"}
+              onChange={handleSelectChange}
             >
-              <option value="0">FIFO</option>
-              <option value="1">SJF</option>
-              <option value="2">Round Robin</option>
-              <option value="3">EDF</option>
+              <option value="FIFO">FIFO</option>
+              <option value="SJF">SJF</option>
+              <option value="RR">Round Robin</option>
+              <option value="EDF">EDF</option>
             </select>
             <div>
               <label
@@ -31,9 +73,14 @@ export const SystemSettings = (): ReactElement => {
               >
                 Algoritmo de substituição de páginas:
               </label>
-              <select name="scaling-system-pages" id="scaling-system-pages">
-                <option value="0">FIFO</option>
-                <option value="1">LRU</option>
+              <select
+                name="pagination"
+                id="scaling-system-pages"
+                value={pagination || "FIFO"}
+                onChange={handleSelectChange}
+              >
+                <option value="FIFO">FIFO</option>
+                <option value="LRU">LRU</option>
               </select>
             </div>
           </div>
@@ -51,6 +98,8 @@ export const SystemSettings = (): ReactElement => {
                 className="form-input"
                 min="1"
                 max="2"
+                value={delay || 0}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -67,6 +116,8 @@ export const SystemSettings = (): ReactElement => {
                 placeholder="0"
                 className="form-input"
                 min="0"
+                value={quantum || 0}
+                onChange={handleChange}
               />
             </div>
             <div>
@@ -76,11 +127,13 @@ export const SystemSettings = (): ReactElement => {
               </label>
               <input
                 type="number"
-                name="sobrecarga"
+                name="override"
                 placeholder="1"
                 id="sobrecarga"
                 className="form-input"
                 min="1"
+                value={override || 1}
+                onChange={handleChange}
               />
             </div>
           </div>

@@ -48,22 +48,6 @@ export const ProcessBox = ({
     );
   };
 
-  // useEffect(() => {
-  //   setProcesses((prevProcesses) =>
-  //     prevProcesses.map((process) =>
-  //       process.id === id
-  //         ? {
-  //             ...process,
-  //             arrivalTime,
-  //             executionTime,
-  //             numPages,
-  //             deadline,
-  //           }
-  //         : process
-  //     )
-  //   );
-  // }, [id, arrivalTime, executionTime, numPages, deadline, setProcesses]);
-
   const handleProcessClose = () => {
     onClose();
   };
@@ -88,7 +72,7 @@ export const ProcessBox = ({
               name="arrivalTime"
               placeholder="0"
               id="arrival"
-              value={arrivalTime}
+              value={arrivalTime || 0}
               className="form-input"
               onChange={handleChange}
               min="0"
@@ -104,7 +88,7 @@ export const ProcessBox = ({
               name="executionTime"
               placeholder="1"
               id="execution"
-              value={executionTime}
+              value={executionTime || 1}
               className="form-input"
               onChange={handleChange}
               min="1"
@@ -123,7 +107,7 @@ export const ProcessBox = ({
               name="deadline"
               id="deadline"
               placeholder="0"
-              value={deadline}
+              value={deadline || 0}
               className="form-input"
               onChange={handleChange}
               min="0"
@@ -139,7 +123,7 @@ export const ProcessBox = ({
               name="numPages"
               placeholder="1"
               id="numPages"
-              value={numPages}
+              value={numPages || 1}
               onChange={handleChange}
               className="form-input"
               min="1"
