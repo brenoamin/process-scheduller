@@ -11,8 +11,90 @@ import { Process } from "./types/Process";
 import { Conditions } from "./types/Conditions";
 import { SchedulerFactory } from "./schedulers";
 import { Method } from "./types/Method";
+import { Gantt } from "./components/Gantt";
+import { ProcessState } from "./types/ProcessState";
 
 function App() {
+  const processStates = [
+    [
+      "NOT_READY",
+      "NOT_READY",
+      "RUNNING",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+    ],
+    [
+      "NOT_READY",
+      "NOT_READY",
+      "WAITING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+      "FINISHED",
+    ],
+    [
+      "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+      "RUNNING",
+    ],
+  ];
+
+  const convertToProcessState = (state: string): ProcessState => {
+    switch (state) {
+      case "NOT_READY":
+        return ProcessState.NOT_READY;
+      case "RUNNING":
+        return ProcessState.RUNNING;
+      case "WAITING":
+        return ProcessState.WAITING;
+      case "OVERHEAD":
+        return ProcessState.OVERHEAD;
+      case "FINISHED":
+        return ProcessState.FINISHED;
+      case "OVER_TIME":
+        return ProcessState.OVER_TIME;
+      default:
+        throw new Error(`Tipo de estado desconhecido: ${state}`);
+    }
+  };
+
+  const convertedProcessStates: ProcessState[][] = processStates.map(column =>
+    column.map(state => convertToProcessState(state))
+  );
+  
   const [processes, setProcesses] = useState<Process[]>([
     new Process(1, 0, 4, 0, 35),
   ]);
@@ -96,6 +178,9 @@ function App() {
           <div>
             <Reset title="Reset" onClick={() => {}} />
           </div>
+        </div>
+        <div className="gantt-chart-view">
+          <Gantt processStates={convertedProcessStates} delay={1000} />
         </div>
       </div>
     </div>

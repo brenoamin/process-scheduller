@@ -1,20 +1,49 @@
 .gantt-wrapper {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: 300px; /* Altura do gráfico, ajuste conforme necessário */
+  flex-direction: row;
+  justify-content: flex-start;
+  height: 300px;
 }
 
 .gantt-cell {
   display: flex;
   flex-direction: column;
-  margin-right: 20px; /* Espaçamento entre colunas, ajuste conforme necessário */
+  margin-right: 20px;
 }
 
 .process {
   width: 50px;
   height: 50px;
   border: 2px solid #000;
-  margin: 5px 0; /* Espaçamento vertical entre processos */
-  transition: top 0.3s; /* Adicione uma transição suave para animações */
+  margin: 5px 0;
+  transition: top 0.3s;
+}
+
+.process-number {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+
+  font-size: 22px;
+}
+
+.time-number {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.not_ready {
+  background-color: red;
+}
+
+.waiting {
+  background-color: yellow;
+}
+
+.running {
+  background-color: green;
+}
+
+.finished {
+  background-color: gray;
 }
