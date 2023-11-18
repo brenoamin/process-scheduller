@@ -26,14 +26,6 @@ export const Gantt = ({ processStates, delay }: GanttProps) => {
     <div className="gantt-wrapper">
       <div className="gantt-scrollable">
         <div className="gantt-content">
-          {/* Números dos processos ao lado da primeira coluna */}
-          <div className="gantt-cell process-numbers">
-            {[...Array(numRows).keys()].reverse().map((rowIndex) => (
-              <div key={rowIndex} className="process-number">
-                {rowIndex + 1}
-              </div>
-            ))}
-          </div>
           {/* Colunas principais */}
           {Array.from({ length: renderedColumns })
             .reverse()
