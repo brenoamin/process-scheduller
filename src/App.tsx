@@ -534,8 +534,8 @@ function App() {
           <div>
             <Run
               title="Run"
-              onClick={() => {}}
-              getProcessData={getProcessData}
+              onClick={getProcessData}
+              disabled={processes.length === 0}
             />
           </div>
           <div>
