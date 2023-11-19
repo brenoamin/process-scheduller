@@ -2,12 +2,14 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  height: 1200px;
+  height: 600px;
 }
 
 .gantt-scrollable {
-  overflow: auto; /* Adiciona barras de rolagem conforme necessário */
+  overflow: auto;
   display: flex;
+  max-height: 600px;
+  max-width: 100%;
 }
 
 .gantt-content {
