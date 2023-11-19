@@ -2,20 +2,9 @@ import { ReactElement } from "react";
 import { ButtonProps } from "../Button/types";
 import { Button } from "../Button";
 
-interface RunProps extends ButtonProps {
-  getProcessData: () => void;
-}
-
-export const Run = ({
-  title,
-  onClick,
-  getProcessData,
-}: RunProps): ReactElement => {
+export const Run = ({ title, onClick, disabled }: ButtonProps): ReactElement => {
   const handleClick = () => {
-    getProcessData();
-    if (onClick) {
-      onClick();
-    }
+    onClick();
   };
-  return <Button title={title} onClick={handleClick} />;
+  return <Button title={title} onClick={handleClick} disabled={disabled} />;
 };
