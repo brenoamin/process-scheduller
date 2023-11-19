@@ -62,3 +62,11 @@
 .finished {
   background-color: gray;
 }
+
+.overhead {
+  background-color: orange;
+}
+
+.over_time {
+  background-color: purple;
+}
