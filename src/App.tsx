@@ -448,6 +448,11 @@ function App() {
     column.map((state) => convertToProcessState(state))
   );
 
+  const handleReset = (): void => {
+    setScheduleResult(null);
+    setProcesses([]);
+  };
+
   const [processes, setProcesses] = useState<Process[]>([
     new Process(1, 0, 4, 0, 35),
   ]);
@@ -534,19 +539,19 @@ function App() {
             />
           </div>
           <div>
-            <Reset title="Reset" onClick={() => {}} />
+            <Reset title="Reset" onClick={handleReset} />
           </div>
         </div>
-        {/* <div className="gantt-chart-view">
+        <div className="gantt-chart-view">
           {scheduleResult && (
             <Gantt
               processStates={scheduleResult}
               delay={systemSettings.delay * 1000}
             />
           )}
-        </div> */}
+        </div>
 
-        <Gantt processStates={convertedProcessStates} delay={0}/>
+        {/* <Gantt processStates={convertedProcessStates} delay={0}/> */}
       </div>
     </div>
   );
