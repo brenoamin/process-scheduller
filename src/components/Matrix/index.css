@@ -25,3 +25,8 @@
   width: 70px;
   height: 70px;
 }
+
+.matrix-value {
+  color: #90e0ef;
+  font-weight: 700;
+}

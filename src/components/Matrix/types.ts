@@ -1,4 +1,4 @@
 export type MatrixTypeProps = {
     title: string;
-    defaultCells: string[]
+    defaultCells: (number | null)[]
 }
