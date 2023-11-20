@@ -8,7 +8,7 @@ export default class Memory implements InterfaceMemory {
   private readonly scheduler: ProcessState[][];
 
   private disk: (number | null)[] = new Array(150).fill(null);
-  private ram: (number | null)[] = new Array(50).fill(null);
+  private ram: (number | null)[] = new Array(50). fill(null);
   private readonly paginationAlgorithm: PaginationAlgorithm; //FIFO ou LRU
 
   private time: number = 0;
@@ -25,7 +25,7 @@ export default class Memory implements InterfaceMemory {
     this.paginationAlgorithm = paginationAlgorithm;
 
     this.loadDisk(this.processes);
-    this.buildMemory();
+    this.buildMemory()
   }
   getDisk(): (number | null)[] {
     return this.disk;
@@ -36,13 +36,12 @@ export default class Memory implements InterfaceMemory {
   }
   nextTime(): void {
     this.time++;
-
     this.buildMemory();
   }
 
   private buildMemory(): void {
     this.getFinishedProcess().forEach(processID => {
-      if(process !== null) {
+      if(processID !== null) {
         this.removeProcess(processID as number)
       }
     })
@@ -83,7 +82,7 @@ export default class Memory implements InterfaceMemory {
   private getRunningProcess(): number | null {
     const activeProcessIndex = this.scheduler.findIndex(
       (process) =>
-        process[this.time] == (ProcessState.RUNNING || ProcessState.OVER_TIME)
+          (process[this.time] == ProcessState.RUNNING || process[this.time] == ProcessState.OVER_TIME)
     );
     if (activeProcessIndex == -1) {
       return null;
@@ -111,19 +110,28 @@ export default class Memory implements InterfaceMemory {
       let idToRemove: number | undefined;
       if (this.paginationAlgorithm === PaginationAlgorithm.FIFO) {
         // FIFO: remove the process that was added first
-        idToRemove = this.queue.shift();
+        idToRemove = this.queue[0];
       } else if (this.paginationAlgorithm === PaginationAlgorithm.LRU) {
         // LRU: remove the process that was used least recently
-        idToRemove = this.queue.pop();
+        idToRemove = this.queue[this.queue.length-1];
       }
 
-      // Remove the process from RAM and add it to disk
+      // Remove all pages of the process from RAM and add them to disk
       if (idToRemove !== undefined) {
         let index = this.ram.findIndex(item => item === idToRemove);
-        if (index !== -1) {
+        while (index !== -1 && this.storageRemaining() < numPages) {
           this.ram[index] = null;
           this.addInDisk(idToRemove);
           index = this.ram.findIndex(item => item === idToRemove);
+          if(index == -1) {
+            if (this.paginationAlgorithm === PaginationAlgorithm.FIFO) {
+              // FIFO: remove the process that was added first
+              this.queue.shift();
+            } else if (this.paginationAlgorithm === PaginationAlgorithm.LRU) {
+              // LRU: remove the process that was used least recently
+              idToRemove = this.queue.pop();
+            }
+          }
         }
       }
     }
@@ -153,6 +161,7 @@ export default class Memory implements InterfaceMemory {
 
     if (this.paginationAlgorithm === PaginationAlgorithm.FIFO) {
       // For FIFO, add the process to the end of the queue
+      this.queue = this.queue.filter(element => element != process.id)
       this.queue.push(process.id);
     } else if (this.paginationAlgorithm === PaginationAlgorithm.LRU) {
       // For LRU, move the process to the end of the queue

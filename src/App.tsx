@@ -13,30 +13,21 @@ import { SchedulerFactory } from "./schedulers";
 import { Method } from "./types/Method";
 import { Gantt } from "./components/Gantt";
 import { ProcessState } from "./types/ProcessState";
+import Memory from "./storage/Memory.ts";
+import {PaginationAlgorithm} from "./types/PaginationAlgorithm.ts";
 
 function App() {
   const processStates = [
     [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
       "RUNNING",
       "RUNNING",
+      "OVERHEAD",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
       "RUNNING",
       "RUNNING",
       "FINISHED",
@@ -50,13 +41,22 @@ function App() {
       "FINISHED",
       "FINISHED",
       "FINISHED",
-      "FINISHED",
-      "FINISHED",
+      "FINISHED"
     ],
     [
       "NOT_READY",
       "NOT_READY",
       "NOT_READY",
+      "RUNNING",
+      "RUNNING",
+      "OVERHEAD",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
+      "WAITING",
       "WAITING",
       "RUNNING",
       "RUNNING",
@@ -66,39 +66,18 @@ function App() {
       "FINISHED",
       "FINISHED",
       "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
+      "FINISHED"
     ],
     [
       "NOT_READY",
       "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
       "WAITING",
       "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
+      "RUNNING",
+      "RUNNING",
+      "OVERHEAD",
       "WAITING",
       "WAITING",
       "WAITING",
@@ -108,322 +87,38 @@ function App() {
       "WAITING",
       "RUNNING",
       "RUNNING",
-      "RUNNING",
       "FINISHED",
       "FINISHED",
       "FINISHED",
       "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
+      "FINISHED"
     ],
     [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "RUNNING",
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-    [
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-    [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
+      "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
+      "NOT_READY",
       "WAITING",
       "WAITING",
       "WAITING",
       "WAITING",
       "RUNNING",
       "RUNNING",
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-    [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
+      "OVERHEAD",
       "WAITING",
       "WAITING",
       "WAITING",
       "WAITING",
       "RUNNING",
       "RUNNING",
+      "OVERHEAD",
       "RUNNING",
-      "RUNNING",
-      "RUNNING",
-    ],
-    [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "RUNNING",
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-    [
-      "WAITING",
-      "WAITING",
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-    [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "RUNNING",
-      "RUNNING",
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-    [
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "WAITING",
-      "RUNNING",
-      "RUNNING",
-      "RUNNING",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-      "FINISHED",
-    ],
-  ];
+      "RUNNING"
+    ]
+  ]
 
   const convertToProcessState = (state: string): ProcessState => {
     switch (state) {
@@ -499,6 +194,258 @@ function App() {
 
     console.log("result", result);
   };
+
+
+  const ps: Process[] = [
+    {
+      "id": 1,
+      "arrivalTime": 0,
+      "executionTime": 4,
+      "remainingTime": 0,
+      "deadline": 0,
+      "numPages": 30
+    },
+    {
+      "id": 2,
+      "arrivalTime": 3,
+      "executionTime": 4,
+      "remainingTime": 0,
+      "deadline": 0,
+      "numPages": 30
+    },
+    {
+      "id": 3,
+      "arrivalTime": 4,
+      "executionTime": 4,
+      "remainingTime": 0,
+      "deadline": 0,
+      "numPages": 30
+    },
+    {
+      "id": 4,
+      "arrivalTime": 7,
+      "executionTime": 6,
+      "remainingTime": 0,
+      "deadline": 0,
+      "numPages": 30
+    }
+  ]
+
+  const memory = new Memory(ps, convertedProcessStates, PaginationAlgorithm.LRU)
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  memory.nextTime()
+
+  console.log("disco: ", memory.getDisk())
+  console.log("RAM: ", memory.getRam())
+
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+  //
+  // memory.nextTime()
+  //
+  // console.log("disco: ", memory.getDisk())
+  // console.log("RAM: ", memory.getRam())
+
 
   return (
     <div className="main-section">
