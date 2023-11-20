@@ -1,8 +1,13 @@
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { Matrix } from "../Matrix";
+import Memory from "../../storage/Memory";
 
-export const DiskMatrix = (): ReactElement => {
-  const defaultCells: string[] = Array.from({ length: 120 }, () => "|");
+interface DiskMatrixProps {
+  memory: Memory;
+}
+
+export const DiskMatrix = ({ memory }: DiskMatrixProps): ReactElement => {
+  const defaultCells: (number | null)[] = memory.getDisk();
 
   return <Matrix title="Disco" defaultCells={defaultCells} />;
 };
