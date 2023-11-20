@@ -41,6 +41,11 @@ export default class Memory implements InterfaceMemory {
   }
 
   private buildMemory(): void {
+    this.getFinishedProcess().forEach(processID => {
+      if(process !== null) {
+        this.removeProcess(processID as number)
+      }
+    })
     const storageRemaining = this.storageRemaining();
     const runningProcess = this.getRunningProcess();
     if (runningProcess == null) {
@@ -84,6 +89,12 @@ export default class Memory implements InterfaceMemory {
       return null;
     }
     return activeProcessIndex + 1;
+  }
+
+  private getFinishedProcess(): (number | null)[] {
+    return this.scheduler
+        .map((process, index) => process[this.time] === ProcessState.FINISHED ? index + 1 : null)
+        .filter(process => process !== null);
   }
 
   private findProcessInRAM(process: Process): boolean {
@@ -174,5 +185,18 @@ export default class Memory implements InterfaceMemory {
     }
   }
 
+  private removeProcess(processID: number): void {
+    // Remove the process from RAM
+    this.ram = this.ram.map(item => item === processID ? null : item);
+
+    // Remove the process from disk
+    this.disk = this.disk.map(item => item === processID ? null : item);
+
+    // Remove the process from the queue
+    const indexInQueue = this.queue.findIndex(item => item === processID);
+    if (indexInQueue !== -1) {
+      this.queue.splice(indexInQueue, 1);
+    }
+  }
 
 }
