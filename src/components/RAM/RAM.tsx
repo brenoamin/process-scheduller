@@ -1,8 +1,13 @@
 import { ReactElement } from "react";
 import { Matrix } from "../Matrix";
+import Memory from "../../storage/Memory";
 
-export const RAM = (): ReactElement => {
-  const defaultCells: string[] = Array.from({ length: 50 }, () => "|");
+interface RAMMatrixProps {
+  memory: Memory;
+}
+
+export const RAM = ({ memory }: RAMMatrixProps): ReactElement => {
+  const defaultCells: (number | null)[] = memory.getRam();
 
   return <Matrix title="RAM" defaultCells={defaultCells} />;
 };
