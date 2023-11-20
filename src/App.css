@@ -47,3 +47,7 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+.gantt-box-legend {
+  display: flex;
+  gap: 20px;
+}
