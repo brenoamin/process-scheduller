@@ -10,7 +10,7 @@ export type GanttProps = {
 export const Gantt = ({ processStates, delay }: GanttProps) => {
   const numRows = processStates.length;
   const numColumns = processStates[0].length;
-  const [renderedColumns, setRenderedColumns] = useState(0);
+  const [renderedColumns, setRenderedColumns] = useState(1);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
