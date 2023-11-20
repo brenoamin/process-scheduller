@@ -1,7 +1,7 @@
-import { InterfaceMemory } from "../types/Memory";
-import { PaginationAlgorithm } from "../types/PaginationAlgorithm.ts";
-import { Process } from "../types/Process.ts";
-import { ProcessState } from "../types/ProcessState.ts";
+import {InterfaceMemory} from "../types/Memory";
+import {PaginationAlgorithm} from "../types/PaginationAlgorithm.ts";
+import {Process} from "../types/Process.ts";
+import {ProcessState} from "../types/ProcessState.ts";
 
 export default class Memory implements InterfaceMemory {
   private readonly processes: Process[];
@@ -50,6 +50,9 @@ export default class Memory implements InterfaceMemory {
     const process = this.processes[runningProcess - 1]
 
     if (this.findProcessInRAM(process)) {
+      if(this.paginationAlgorithm == PaginationAlgorithm.LRU) {
+        this.reprioritizeProcess(process.id)
+      }
       return;
     }
 
@@ -137,8 +140,6 @@ export default class Memory implements InterfaceMemory {
       }  else break;
     }
 
-    //TODO: rever lógica da fila
-    // Update the queue
     if (this.paginationAlgorithm === PaginationAlgorithm.FIFO) {
       // For FIFO, add the process to the end of the queue
       this.queue.push(process.id);
@@ -164,5 +165,14 @@ export default class Memory implements InterfaceMemory {
       this.disk[indexInDisk] = id;
     }
   }
+
+  private reprioritizeProcess(processID: number): void {
+    const index = this.queue.indexOf(processID);
+    if (index > -1) {
+      this.queue.splice(index, 1);
+      this.queue.unshift(processID);
+    }
+  }
+
 
 }
