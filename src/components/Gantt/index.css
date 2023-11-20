@@ -48,7 +48,7 @@
 }
 
 .not_ready {
-  background-color: red;
+  background-color: purple;
 }
 
 .waiting {
@@ -64,9 +64,9 @@
 }
 
 .overhead {
-  background-color: orange;
+  background-color: red;
 }
 
 .over_time {
-  background-color: purple;
+  background-color: orange;
 }
