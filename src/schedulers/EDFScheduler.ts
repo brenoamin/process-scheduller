@@ -5,7 +5,7 @@ import {Scheduler} from "../types/Scheduler";
 
 
 export class EDFScheduler implements Scheduler {
-    schedule(processes: Process[], quantum: number = 1, overhead: number = 1): ProcessState[][] {
+    schedule(processes: Process[], quantum: number = 1, overhead: number = 0): ProcessState[][] {
         // Ordena os processos por tempo de chegada
         processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
 
