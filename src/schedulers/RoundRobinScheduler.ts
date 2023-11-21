@@ -3,7 +3,7 @@ import {Process} from "../types/Process.ts";
 import {ProcessState} from "../types/ProcessState.ts";
 
 export class RoundRobinScheduler implements Scheduler {
-    schedule(processes: Process[], quantum: number = 1, overhead: number = 1): ProcessState[][] {
+    schedule(processes: Process[], quantum: number = 1, overhead: number = 0): ProcessState[][] {
         // Ordena os processos por tempo de chegada
         processes.sort((a, b) => a.arrivalTime - b.arrivalTime);
 

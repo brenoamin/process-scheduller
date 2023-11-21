@@ -31,8 +31,8 @@ function App() {
   const [systemSettings, setSystemSettings] = useState<Conditions>({
     method: Method.FIFO,
     pagination: "FIFO",
-    quantum: 0,
-    overhead: 1,
+    quantum: 1,
+    overhead: 0,
     delay: 0,
   });
 

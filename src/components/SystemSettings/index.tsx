@@ -20,10 +20,10 @@ export const SystemSettings = ({
 
     if (name === "delay" && parsedValue < 0) {
       parsedValue = 0;
-    } else if (name === "quantum" && parsedValue < 0) {
-      parsedValue = 0;
-    } else if (name === "overhead" && parsedValue < 1) {
+    } else if (name === "quantum" && parsedValue < 1) {
       parsedValue = 1;
+    } else if (name === "overhead" && parsedValue < 0) {
+      parsedValue = 0;
     }
 
     setSystemSettings((prevSettings) => ({
@@ -113,10 +113,10 @@ export const SystemSettings = ({
                 type="number"
                 name="quantum"
                 id="quantum"
-                placeholder="0"
+                placeholder="1"
                 className="form-input"
-                min="0"
-                value={quantum || 0}
+                min="1"
+                value={quantum || 1}
                 onChange={handleChange}
               />
             </div>
@@ -128,11 +128,11 @@ export const SystemSettings = ({
               <input
                 type="number"
                 name="overhead"
-                placeholder="1"
+                placeholder="0"
                 id="sobrecarga"
                 className="form-input"
-                min="1"
-                value={overhead || 1}
+                min="0"
+                value={overhead || 0}
                 onChange={handleChange}
               />
             </div>
