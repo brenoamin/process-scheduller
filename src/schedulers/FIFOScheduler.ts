@@ -59,7 +59,6 @@ export class FIFOScheduler implements Scheduler {
         state.push(ProcessState.FINISHED);
       }
     }
-
     return states;
   }
 }

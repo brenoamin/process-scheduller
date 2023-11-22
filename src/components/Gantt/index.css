@@ -1,8 +1,9 @@
 .gantt-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   height: 600px;
+  align-items: center;
 }
 
 .gantt-scrollable {
@@ -45,6 +46,10 @@
 .time-number {
   text-align: center;
   margin-top: 5px;
+}
+
+.average-turnaround-number {
+  margin-bottom: 10px;
 }
 
 .not_ready {

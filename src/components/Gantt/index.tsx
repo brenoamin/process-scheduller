@@ -11,19 +11,35 @@ export const Gantt = ({ processStates, delay }: GanttProps) => {
   const numRows = processStates.length;
   const numColumns = processStates[0].length;
   const [renderedColumns, setRenderedColumns] = useState(1);
-
+  
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (renderedColumns < numColumns) {
         setRenderedColumns(renderedColumns + 1);
       }
     }, delay);
-
+    
     return () => clearTimeout(timeout);
   }, [renderedColumns, numColumns, delay]);
+  
+  const calculateAverageTurnaround = (): number => {
+    const numberProcesses = numRows
+    const processStateArray = processStates.flat();
+    const targetStates: ProcessState[] = [ProcessState.RUNNING, ProcessState.WAITING, ProcessState.OVERHEAD];
+    
+    const turnAround = processStateArray.reduce((contador, state) => {
+      if (targetStates.includes(state)) {
+        contador++;
+      }
+      return contador;
+    }, 0);
 
+    return turnAround / numberProcesses
+  }
+  
   return (
     <div className="gantt-wrapper">
+      <div className="average-turnaround-number"><h4>Turnaround médio: {calculateAverageTurnaround()}</h4></div>
       <div className="gantt-scrollable">
         <div className="gantt-content">
           {/* Colunas principais */}
@@ -36,7 +52,7 @@ export const Gantt = ({ processStates, delay }: GanttProps) => {
                   <div
                     key={rowIndex}
                     className={`process ${row[columnIndex].toLowerCase()}`}
-                  >
+                    >
                     {numRows - rowIndex}
                   </div>
                 ))}
