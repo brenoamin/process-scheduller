@@ -1,6 +1,6 @@
 import "./index.css";
-import { ProcessState } from "../../types/ProcessState";
-import { useEffect, useState } from "react";
+import {ProcessState} from "../../types/ProcessState";
+import {useEffect, useState} from "react";
 
 export type GanttProps = {
   processStates: ProcessState[][];
@@ -22,10 +22,10 @@ export const Gantt = ({ processStates, delay }: GanttProps) => {
     return () => clearTimeout(timeout);
   }, [renderedColumns, numColumns, delay]);
   
-  const calculateAverageTurnaround = (): number => {
+  const calculateAverageTurnaround = (): string => {
     const numberProcesses = numRows
     const processStateArray = processStates.flat();
-    const targetStates: ProcessState[] = [ProcessState.RUNNING, ProcessState.WAITING, ProcessState.OVERHEAD];
+    const targetStates: ProcessState[] = [ProcessState.RUNNING, ProcessState.WAITING, ProcessState.OVERHEAD, ProcessState.OVER_TIME];
     
     const turnAround = processStateArray.reduce((contador, state) => {
       if (targetStates.includes(state)) {
@@ -34,7 +34,7 @@ export const Gantt = ({ processStates, delay }: GanttProps) => {
       return contador;
     }, 0);
 
-    return turnAround / numberProcesses
+    return (turnAround / numberProcesses).toFixed(2)
   }
   
   return (
