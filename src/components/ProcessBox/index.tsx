@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement } from "react";
 import close from "../../assets/close-button.svg";
 import "./index.css";
 import { Process } from "../../types/Process";

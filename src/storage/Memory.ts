@@ -121,7 +121,7 @@ export default class Memory implements InterfaceMemory {
         let index = this.ram.findIndex(item => item === idToRemove);
         while (index !== -1 && this.storageRemaining() < numPages) {
           this.ram[index] = null;
-          this.addInDisk(idToRemove);
+          this.addInDisk(idToRemove!);
           index = this.ram.findIndex(item => item === idToRemove);
           if(index == -1) {
             if (this.paginationAlgorithm === PaginationAlgorithm.FIFO) {
