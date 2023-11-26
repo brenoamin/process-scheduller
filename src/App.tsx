@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { NewButton } from "./components/NewButton";
 import { ProcessBox } from "./components/ProcessBox";
@@ -24,9 +24,14 @@ function App() {
   };
 
   const [processes, setProcesses] = useState<Process[]>([]);
+  const [disableRun, setDisableRun] = useState<boolean>(processes.length === 0);
   const [scheduleResult, setScheduleResult] = useState<ProcessState[][] | null>(
     null
   );
+
+  useEffect(() => {
+    setDisableRun(processes.length === 0);
+  }, [processes]);
 
   const [systemSettings, setSystemSettings] = useState<Conditions>({
     method: Method.FIFO,
@@ -53,9 +58,8 @@ function App() {
   };
 
   const getProcessData = (): void => {
-    console.log("Processes", processes);
-
-    console.log("System Settings", systemSettings);
+    resetState();
+    setDisableRun(true);
 
     const scheduler = SchedulerFactory.chooseScheduler(systemSettings.method);
 
@@ -74,6 +78,12 @@ function App() {
     );
 
     setMemory(memory);
+  };
+
+  const resetState = () => {
+    setDisableRun(false);
+    setScheduleResult(null);
+    setMemory(null);
   };
 
   return (
@@ -106,11 +116,7 @@ function App() {
         )}
         <div className="control-system">
           <div>
-            <Run
-              title="Run"
-              onClick={getProcessData}
-              disabled={processes.length === 0}
-            />
+            <Run title="Run" onClick={getProcessData} disabled={disableRun} />
           </div>
           <div>
             <Reset title="Reset" onClick={handleReset} />
