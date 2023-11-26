@@ -74,7 +74,7 @@ export class EDFScheduler implements Scheduler {
 
                 // Preenche o estado RUNNING para o tempo de execução do processo
                 for (let i = 0; i < timeToExecute; i++) {
-                    states[nextProcess.id - 1].push(nextProcess.deadline <= (currentTime - nextProcess?.arrivalTime) ? ProcessState.OVER_TIME : ProcessState.RUNNING);
+                    states[nextProcess.id - 1].push(nextProcess.deadline < (currentTime - nextProcess?.arrivalTime) ? ProcessState.OVER_TIME : ProcessState.RUNNING);
                     nextProcess.remainingTime -= 1;
                     currentTime++;
                 }
