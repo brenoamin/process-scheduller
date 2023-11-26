@@ -15,18 +15,28 @@ export class EDFScheduler implements Scheduler {
         // Tempo atual começa no tempo de chegada do primeiro processo ou em 0
         let currentTime = processes.length > 0 ? processes[0].arrivalTime : 0;
 
-        const getNextProcess = (actual: Process) => {
+        const getNextProcess = () => {
             let nextProcess: Process | undefined;
 
             for (const process of processes) {
+                let processDeadline = 0;
+                let actualProcessDeadline = 0;
+
+                if(process) {
+                    processDeadline = process.deadline - (currentTime - process.arrivalTime)
+                }
+
+                if(nextProcess) {
+                    actualProcessDeadline = nextProcess.deadline - (currentTime - nextProcess.arrivalTime)
+                }
+
                 if (process.arrivalTime <= currentTime && !states[process.id - 1].includes(ProcessState.FINISHED)) {
-                    if (!actual ||( process.deadline || 0) < (actual.deadline || 0)) {
+                    if (!nextProcess || (processDeadline <= actualProcessDeadline)) {
                         nextProcess = process;
                     }
                 }
             }
-
-            return nextProcess || actual;
+            return nextProcess!;
         }
 
 
@@ -38,7 +48,7 @@ export class EDFScheduler implements Scheduler {
             let nextProcess: Process | undefined = undefined;
 
             // Encontra o próximo processo com arrivalTime <= currentTime
-            nextProcess = getNextProcess(nextProcess)
+            nextProcess = getNextProcess()
 
 
             // Se não houver mais processos para executar, saia do loop
@@ -64,7 +74,7 @@ export class EDFScheduler implements Scheduler {
 
                 // Preenche o estado RUNNING para o tempo de execução do processo
                 for (let i = 0; i < timeToExecute; i++) {
-                    states[nextProcess.id - 1].push(nextProcess.deadline <= currentTime ? ProcessState.OVER_TIME : ProcessState.RUNNING);
+                    states[nextProcess.id - 1].push(nextProcess.deadline <= (currentTime - nextProcess?.arrivalTime) ? ProcessState.OVER_TIME : ProcessState.RUNNING);
                     nextProcess.remainingTime -= 1;
                     currentTime++;
                 }
@@ -78,7 +88,7 @@ export class EDFScheduler implements Scheduler {
                     }
 
                     // Verifica se há algum processo com um prazo menor disponível
-                    const newNextProcess = getNextProcess(nextProcess)
+                    const newNextProcess = getNextProcess()
 
                     // Se o próximo processo a ser executado mudou, interrompe a execução do processo atual
                     if (newNextProcess.id !== nextProcess.id) {
